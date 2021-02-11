@@ -1,6 +1,8 @@
 package at.nsc.functions;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Files;
 
 
 /** NIS DiskAnalyse - Analyse
@@ -22,20 +24,26 @@ public class Analyse
 
     public void readFile(String fileName)
     {
-        byte[] buffer;
+
+        byte[] isoBytes;
         FileInputStream inputStream;
         try
         {
+            File iso = new File(fileName);
+            isoBytes = Files.readAllBytes(iso.toPath());
+
+            /*
             inputStream = new FileInputStream(fileName);
-            buffer = inputStream.readAllBytes();
+            isoBytes = inputStream.readAllBytes();
+             */
 
             System.out.println("************************************");
             System.out.println("*      File successfully read      *");
             System.out.println("************************************");
-            sort(buffer);
+            sort(isoBytes);
 
-            for (int i = 0; i < buffer.length; i++)
-                System.out.println(buffer[i]);
+            for (int i = 0; i < isoBytes.length; i++)
+                System.out.println(isoBytes[i]);
         }
         catch (Exception exception)
         {
@@ -48,7 +56,7 @@ public class Analyse
     private void sort(byte[] allBytes)
     {
         int i;
-        for (i = 0; i < signature.length; i++)
+        for (i = 513; i < signature.length; i++)
         {
             signature[i] = allBytes[i];
         }
