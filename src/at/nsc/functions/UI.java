@@ -6,6 +6,8 @@ import java.util.Scanner;
  * @author Niklas Schachl
  * @version 1.0, 8.2.2021
  */
+
+//This class contains everything about the UserInterface
 public class UI
 {
     private static boolean firstStart = true;

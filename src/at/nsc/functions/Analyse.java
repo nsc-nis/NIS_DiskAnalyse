@@ -1,14 +1,15 @@
 package at.nsc.functions;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.nio.file.Files;
 
 
 /** NIS DiskAnalyse - Analyse
  * @author Niklas Schachl
- * @version 1.0, 8.2.2021
+ * @version 1.0, 11.2.2021
  */
+
+//This class contains the core of the program
 public class Analyse
 {
     private final byte[] signature = new byte[8];
@@ -26,24 +27,20 @@ public class Analyse
     {
 
         byte[] isoBytes;
-        FileInputStream inputStream;
         try
         {
             File iso = new File(fileName);
             isoBytes = Files.readAllBytes(iso.toPath());
-
-            /*
-            inputStream = new FileInputStream(fileName);
-            isoBytes = inputStream.readAllBytes();
-             */
 
             System.out.println("************************************");
             System.out.println("*      File successfully read      *");
             System.out.println("************************************");
             sort(isoBytes);
 
+            /* Just for testing purpose
             for (int i = 0; i < isoBytes.length; i++)
                 System.out.println(isoBytes[i]);
+             */
         }
         catch (Exception exception)
         {

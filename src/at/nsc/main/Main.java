@@ -10,6 +10,7 @@ public class Main
 {
     public static void main (String[] args)
     {
+        //Start the UserInterface
         UI.mainMenu();
     }
 }
