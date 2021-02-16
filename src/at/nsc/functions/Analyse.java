@@ -7,21 +7,20 @@ import java.nio.file.Files;
 /** NIS DiskAnalyse - Analyse
  * @author Niklas Schachl
  * @version 1.0, 11.2.2021
+ * @version 1.1, 16.2.2021
  */
 
 //This class contains the core of the program
 public class Analyse
 {
-    private final byte[] signature = new byte[8];
-    private final byte[] revision = new byte[4];
-    private final byte[] headerChecksum = new byte[8];
-    private final byte[] positionPartitionTable = new byte[16];
-    private final byte[] positionFirstLast = new byte[16];
-    private final byte[] guid = new byte[16];
-    private final byte[] positionPartitions = new byte[8];
-    private final byte[] amountPartitions = new byte[4];
-    private final byte[] sizeOfPartitionEntry = new byte[4];
-    private final byte[] crc = new byte[4];
+    private byte[] signature = new byte[8];
+    private byte[] headerChecksumAndSize = new byte[8];
+    private byte[] amountPartitions = new byte[4];
+    private byte[] partitionSize = new byte[8];
+    private byte[] firstLBA = new byte[8];
+    private byte[] guid = new byte[16];
+    private byte[] attributes = new byte[8];
+    private byte[] partitionName = new byte[72];
 
     public void readFile(String fileName)
     {
@@ -52,86 +51,61 @@ public class Analyse
 
     private void sort(byte[] allBytes)
     {
-        int i;
-        for (i = 513; i < signature.length; i++)
-        {
-            signature[i] = allBytes[i];
-        }
-        for (int ii = 0; ii < revision.length; ii++, i++)
-        {
-            revision[ii] = allBytes[i];
-        }
-        for (int iii = 0; iii < headerChecksum.length; iii++, i++)
-        {
-            headerChecksum[iii] = allBytes[i];
-        }
-        for (int iv = 0; iv < positionPartitionTable.length; iv++, i++)
-        {
-            positionPartitionTable[iv] = allBytes[i];
-        }
-        for (int v = 0; v < positionFirstLast.length; v++, i++)
-        {
-            positionFirstLast[v] = allBytes[i];
-        }
-        for (int vi = 0; vi < guid.length; vi++, i++)
-        {
-            guid[vi] = allBytes[i];
-        }
-        for (int vii = 0; vii < positionPartitions.length; vii++, i++)
-        {
-            positionPartitions[vii] = allBytes[i];
-        }
-        for (int viii = 0; viii < amountPartitions.length; viii++, i++)
-        {
-            amountPartitions[viii] = allBytes[i];
-        }
-        for (int ix = 0; ix < sizeOfPartitionEntry.length; ix++, i++)
-        {
-            sizeOfPartitionEntry[ix] = allBytes[i];
-        }
-        for (int x = 0; x < crc.length; x++, i++)
-        {
-            crc[x] = allBytes[i];
-        }
+
+        signature = slice(allBytes, 512, 8);
+        headerChecksumAndSize = slice(allBytes, 524,4);
+        amountPartitions = slice(allBytes, 592, 4);
+        partitionSize = slice(allBytes, 596, 4);
+        firstLBA = slice(allBytes, 552, 8);
+
+        int indexFirstLBA = firstLBA[1] * 128;
+
+        guid = slice(allBytes, indexFirstLBA, 16);
+        attributes = slice(allBytes, indexFirstLBA+48, 8);
+        partitionName = slice(allBytes, indexFirstLBA+56, 72);
     }
 
     public byte[] getSignature() {
         return signature;
     }
 
-    public byte[] getRevision() {
-        return revision;
-    }
-
-    public byte[] getHeaderChecksum() {
-        return headerChecksum;
-    }
-
-    public byte[] getPositionPartitionTable() {
-        return positionPartitionTable;
-    }
-
-    public byte[] getPositionFirstLast() {
-        return positionFirstLast;
-    }
-
-    public byte[] getGuid() {
-        return guid;
-    }
-
-    public byte[] getPositionPartitions() {
-        return positionPartitions;
+    public byte[] getHeaderChecksumAndSize() {
+        return headerChecksumAndSize;
     }
 
     public byte[] getAmountPartitions() {
         return amountPartitions;
     }
 
-    public byte[] getSizeOfPartitionEntry() {
-        return sizeOfPartitionEntry;
+    public byte[] getPartitionSize() {
+        return partitionSize;
     }
 
-    public byte[] getCrc() {
-        return crc;
+    public byte[] getFirstLBA() {
+        return firstLBA;
+    }
+
+    public byte[] getGuid() {
+        return guid;
+    }
+
+    public byte[] getAttributes() {
+        return attributes;
+    }
+
+    public byte[] getPartitionName() {
+        return partitionName;
+    }
+
+    public byte[] slice(byte[] allBytes, int allLength, int newLength)
+    {
+        byte[] newArray = new byte[newLength];
+        int count = 0;
+        for (int i = allLength; i < allLength+newLength; i++)
+        {
+            newArray[count] = allBytes[i];
+            count++;
+        }
+        return newArray;
     }
 }

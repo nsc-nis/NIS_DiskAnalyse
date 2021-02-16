@@ -1,10 +1,12 @@
 package at.nsc.functions;
 
+import java.util.Locale;
 import java.util.Scanner;
 
 /** NIS DiskAnalyse - UI
  * @author Niklas Schachl
  * @version 1.0, 8.2.2021
+ * @version 1.1, 16.2.2021
  */
 
 //This class contains everything about the UserInterface
@@ -51,7 +53,7 @@ public class UI
                 System.out.println(" ");
                 System.out.println("************************************");
                 System.out.println("*          NIS DiskAnalyse         *");
-                System.out.println("* Version: 1.0                     *");
+                System.out.println("* Version: 1.1                     *");
                 System.out.println("* A simple command-line tool to    *");
                 System.out.println("* analyse drives (.iso-files)      *");
                 System.out.println("************************************");
@@ -91,12 +93,14 @@ public class UI
         System.out.println(displayResult(analyse));
     }
 
-    private static String displayByteInline(byte[] bytes)
+    private static String displayByte(byte[] bytes)
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (byte aByte : bytes) {
-            stringBuilder.append(aByte);
+        for (byte aByte : bytes)
+        {
+            stringBuilder.append("0x");
+            stringBuilder.append(Integer.toHexString(Math.abs(aByte)).toUpperCase(Locale.ROOT));
             stringBuilder.append(" ");
         }
         return stringBuilder.toString();
@@ -104,18 +108,19 @@ public class UI
 
     private static String displayResult(Analyse analyse)
     {
-       StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("Signature: " + displayByteInline(analyse.getSignature()) + "\n");
-        stringBuilder.append("Revision: " + displayByteInline(analyse.getRevision()) + "\n");
-        stringBuilder.append("Header length and checksum: " + displayByteInline(analyse.getHeaderChecksum()) + "\n");
-        stringBuilder.append("Position of the partition-tables: " + displayByteInline(analyse.getPositionPartitionTable()) + "\n");
-        stringBuilder.append("Position of the first and last block: " + displayByteInline(analyse.getPositionFirstLast()) + "\n");
-        stringBuilder.append("GUID: " + displayByteInline(analyse.getGuid()) + "\n");
-        stringBuilder.append("Position of the partition: " + displayByteInline(analyse.getPositionPartitions()) + "\n");
-        stringBuilder.append("Amount of Partitions: " + displayByteInline(analyse.getAmountPartitions()) + "\n");
-        stringBuilder.append("Size of the partition entry: " + displayByteInline(analyse.getSizeOfPartitionEntry()) + "\n");
-        stringBuilder.append("Table-checksum (CRC32): " + displayByteInline(analyse.getCrc()) + "\n");
+        stringBuilder.append("\n");
+        stringBuilder.append("************************************\n");
+        stringBuilder.append("Signature: " + displayByte(analyse.getSignature()) + "\n");
+        stringBuilder.append("Header length and checksum: " + displayByte(analyse.getHeaderChecksumAndSize()) + "\n");
+        stringBuilder.append("Amount of Partitions: " + displayByte(analyse.getAmountPartitions()) + "\n");
+        stringBuilder.append("Partition-size: " + displayByte(analyse.getPartitionSize()) + "\n");
+        stringBuilder.append("First useable LBA: " + displayByte(analyse.getFirstLBA()) + "\n");
+        stringBuilder.append("GUID: " + displayByte(analyse.getGuid()) + "\n");
+        stringBuilder.append("Attributes: " + displayByte(analyse.getAttributes()) + "\n");
+        stringBuilder.append("Partition-name: " + displayByte(analyse.getPartitionName()) + "\n");
+        stringBuilder.append("************************************\n");
 
         return stringBuilder.toString();
     }
