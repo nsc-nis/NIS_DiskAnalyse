@@ -21,7 +21,7 @@ public class UI
         if (firstStart)
         {
             System.out.println("************************************");
-            System.out.println("*  Welcome to NIS DiskAnalyse 1.0  *");
+            System.out.println("*  Welcome to NIS DiskAnalyse 1.1  *");
             System.out.println("*                                  *");
             System.out.println("************************************");
             System.out.println("Type in 'action.program.help' to view a list of possible commands");
